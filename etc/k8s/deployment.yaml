@@ -1,0 +1,101 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: is-skeletons-detector
+  namespace: default
+data:
+  detector: |-
+    {
+      "broker_uri": "amqp://rabbitmq.default",
+      "zipkin_host": "zipkin.default",
+      "zipkin_port": 9411,
+      "models_folder": "/models/",
+      "model": "COCO",
+      "network_resolution": {
+        "width": -1,
+        "height": 256
+      },
+      "output_resolution": {
+        "width": -1,
+        "height": -1
+      },
+      "scale_gap": {
+        "value": 0.3
+      },
+      "scale_number": {
+        "value": 1
+      },
+      "period": 50
+    }
+
+---
+apiVersion: extensions/v1beta1 
+kind: Deployment
+metadata:
+  name: "is-skeletons-detector"
+spec:
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: is-skeletons-detector
+    spec:
+      containers:
+        - name: is-skeletons-detector
+          image: luizcarloscf/is-skeletons-detector:0.0.2-openpose-prometheus
+          args: ["/opt/is/stream.bin", "/opt/options/options.json"]
+          imagePullPolicy: Always
+          ports:
+            - name: web
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          resources:
+            limits:
+              cpu: "1"
+              memory: 1024Mi
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: options
+              mountPath: /opt/options
+      terminationGracePeriodSeconds: 1
+      volumes:
+      - name: options
+        configMap:
+          name: is-skeletons-detector
+          items:
+          - key: detector
+            path: options.json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: is-skeletons-detector
+  labels:
+    app: is-skeletons-detector
+spec:
+  ports:
+    - name: web
+      port: 80
+      targetPort: web
+  selector:
+    app: is-skeletons-detector
+
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: is-skeletons-detector
+  labels:
+    app: is-skeletons-detector
+spec:
+  selector:
+    matchLabels:
+      app: is-skeletons-detector
+  endpoints:
+    - port: web
+      interval: 5s # scrape the endpoint every X seconds

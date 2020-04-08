@@ -1,10 +1,13 @@
 #include <chrono>
 #include <cstdlib>
 #include <vector>
+#include <numeric>
 #include "skeletons/utils.hpp"
 #include "skeletons/detector.hpp"
 #include <is/wire/core.hpp>
 #include <is/msgs/utils.hpp>
+#include <prometheus/exposer.h>
+#include <prometheus/registry.h>
 
 using namespace std::chrono;
 
@@ -29,10 +32,12 @@ int main(int argc, char** argv) {
   exposer.RegisterCollectable(registry);
   auto& skeletons_metric =
       prometheus::BuildGauge().Name("skeletons").Register(*registry).Add({});
-  skeletons_metric.Set(0);
+  skeletons_metric.Set(0.0);
 
-  vector<float> buffer;
-  auto start = steady_clock::now();
+  std::vector<double> buffer;
+  
+  steady_clock::time_point start;
+  start = steady_clock::now();
 
   while (true) {
     const auto start_span = [&](auto& maybe_ctx, auto span_name) {
@@ -73,15 +78,16 @@ int main(int argc, char** argv) {
     channel.publish(fmt::format("SkeletonsDetector.{}.Rendered", camera_id), rendered_msg);
 
     auto end = steady_clock::now();
-    duration = chrono::duration_cast<chrono::seconds>(end - start).count()
-    if ((duration >= op.period()) && (buffer.size() > 0) {
-      auto mean = std::accumulate(std::begin(buffer), std::end(buffer), 0.0) / std::size(buffer);
+    auto duration = duration_cast<seconds>(end - start);
+    if ((duration.count() >= options.period()) && (buffer.size() > 0)) {
+      double mean = std::accumulate(buffer.begin(), buffer.end(), 0.0) / buffer.size();
       skeletons_metric.Set(mean);
       buffer.clear();
-      auto start = steady_clock::now();
+      start = steady_clock::now();
     }
     else {
-      buffer.push_bash(skeletons.objects_size());
+      auto num_skeletons = (double) skeletons.objects_size();
+      buffer.push_back(num_skeletons);
     }
 
     render_span->Finish();
@@ -91,6 +97,6 @@ int main(int argc, char** argv) {
 
     const auto dt = [](auto& tf, auto& t0) { return duration_cast<microseconds>(tf - t0).count() / 1000.0; };
     is::info("source = {}, detections = {}, dropped_messages = {}", msg.topic(), skeletons.objects_size(), dropped);
-    is::info("took_ms = {{ detection = {:.2f}, service = {:.2f} }}", dt(t1, t0), dt(t2, t0));
+    is::info("took_s = {{ detection = {:.2f}, service = {:.2f} }}", dt(t1, t0), dt(t2, t0));
   }
 }
