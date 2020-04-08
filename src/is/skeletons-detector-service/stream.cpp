@@ -1,5 +1,6 @@
 #include <chrono>
 #include <cstdlib>
+#include <vector>
 #include "skeletons/utils.hpp"
 #include "skeletons/detector.hpp"
 #include <is/wire/core.hpp>
@@ -21,6 +22,17 @@ int main(int argc, char** argv) {
   auto gpu_device_id_var = std::getenv("GPU_DEVICE_ID");
   auto gpu_device_id = gpu_device_id_var != nullptr ? gpu_device_id_var : "";
   int dropped;
+
+
+  prometheus::Exposer exposer("8080");  // Expose metrics at http://<ip>:8080/metrics
+  auto registry = std::make_shared<prometheus::Registry>();
+  exposer.RegisterCollectable(registry);
+  auto& skeletons_metric =
+      prometheus::BuildGauge().Name("skeletons").Register(*registry).Add({});
+  skeletons_metric.Set(0);
+
+  vector<float> buffer;
+  auto start = steady_clock::now();
 
   while (true) {
     const auto start_span = [&](auto& maybe_ctx, auto span_name) {
@@ -53,12 +65,25 @@ int main(int argc, char** argv) {
     channel.publish(fmt::format("SkeletonsDetector.{}.Detection", camera_id), skeletons_msg);
     pack_sk_span->Finish();
 
-    auto render_span = start_span(maybe_ctx, "render_pack_publish");
+    auto render_span = start_span(maybe_ctx, "render_pack_publish_expose");
     auto cv_image = detector.last_image();
     Image pb_rendered_image;
     render_skeletons(cv_image, skeletons, &pb_rendered_image);
     is::Message rendered_msg{pb_rendered_image};
     channel.publish(fmt::format("SkeletonsDetector.{}.Rendered", camera_id), rendered_msg);
+
+    auto end = steady_clock::now();
+    duration = chrono::duration_cast<chrono::seconds>(end - start).count()
+    if ((duration >= op.period()) && (buffer.size() > 0) {
+      auto mean = std::accumulate(std::begin(buffer), std::end(buffer), 0.0) / std::size(buffer);
+      skeletons_metric.Set(mean);
+      buffer.clear();
+      auto start = steady_clock::now();
+    }
+    else {
+      buffer.push_bash(skeletons.objects_size());
+    }
+
     render_span->Finish();
 
     service_span->Finish();

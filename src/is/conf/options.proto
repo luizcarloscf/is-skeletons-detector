@@ -44,4 +44,7 @@ message SkeletonsDetectorOptions {
   google.protobuf.DoubleValue scale_gap = 9;
   // GPU device start number.
   uint32 num_gpu_start = 10;
+  //period of expose metric in seconds
+  uint32 period = 11;
+
 }
