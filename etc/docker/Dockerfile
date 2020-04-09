@@ -1,4 +1,23 @@
-FROM is-skeletons-detector/dev
+ 
+FROM tensorflow/tensorflow:1.11.0-py3
+
+RUN pip uninstall -y jupyter ipykernel                               \
+    && rm -rf /notebooks                                                \ 
+    && rm -f /run_jupyter.sh                                            \
+    && rm -f /root/.jupyter/jupyter_notebook_config.py                  \
+    && rm -f /tensorflow-1.11.0-cp35-cp35m-manylinux1_x86_64.whl
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git wget libsm6 libxext6 libxrender-dev 
+
+RUN cd /tmp                                                  \
+    && git clone https://github.com/ildoonet/tf-pose-estimation \
+    && cd tf-pose-estimation                                    \
+    && git checkout b119759e8a41828c633bd39b5c883bf5a56a214f    \
+    && cd models/graph/cmu/ && bash download.sh && cd ../../../ \
+    && pip install --user .
+
+RUN rm -rf /tmp/*
 
 WORKDIR /opt/is
 
@@ -8,4 +27,4 @@ COPY etc/conf/options.json .
 
 RUN pip install .
 
-CMD [ "is-skeletons-detector" ]
+CMD [ "is-skeletons-detector-stream" ]

@@ -4,6 +4,7 @@ import dateutil.parser as dp
 from is_wire.core import Subscription, Message, Logger
 from is_wire.core import Tracer, ZipkinExporter, BackgroundThreadTransport
 from is_msgs.image_pb2 import Image
+from prometheus_client import start_http_server, Gauge
 
 from .stream_channel import StreamChannel
 from .skeletons import SkeletonsDetector
@@ -34,6 +35,14 @@ def main():
         transport=BackgroundThreadTransport(max_batch_size=max_batch_size),
     )
 
+    skeletons_detected = Gauge("skeletons",
+                               "Skeletons detected by any camera")
+    skeletons_detected.set(0.0)
+    start_http_server(8000)
+
+    buffer = list()
+    initial_time = time.time()
+
     subscription = Subscription(channel=channel, name=service_name)
     subscription.subscribe('CameraGateway.*.Frame')
 
@@ -56,12 +65,18 @@ def main():
             sks_msg.inject_tracing(span)
             sks_msg.pack(skeletons)
             channel.publish(sks_msg)
-        with tracer.span(name='render_pack_publish'):
+        with tracer.span(name='render_pack_publish_expose'):
             im_rendered = draw_skeletons(im_np, skeletons)
             rendered_msg = Message()
             rendered_msg.topic = re_topic.sub(r'SkeletonsDetector.\1.Rendered', msg.topic)
             rendered_msg.pack(get_pb_image(im_rendered))
             channel.publish(rendered_msg)
+            buffer.append(len(skeletons.objects))
+            if (time.time() - initial_time) > op.period and len(buffer) > 0:
+                log.info('metric = {:5.2f}',sum(buffer) / len(buffer))
+                skeletons_detected.set(sum(buffer) / len(buffer))
+                buffer = []
+                initial_time = time.time()
 
         span.add_attribute('Detections', len(skeletons.objects))
         tracer.end_span()
