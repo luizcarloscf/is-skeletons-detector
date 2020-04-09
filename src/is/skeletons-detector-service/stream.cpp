@@ -26,16 +26,14 @@ int main(int argc, char** argv) {
   auto gpu_device_id = gpu_device_id_var != nullptr ? gpu_device_id_var : "";
   int dropped;
 
-
   prometheus::Exposer exposer("8080");  // Expose metrics at http://<ip>:8080/metrics
   auto registry = std::make_shared<prometheus::Registry>();
   exposer.RegisterCollectable(registry);
-  auto& skeletons_metric =
-      prometheus::BuildGauge().Name("skeletons").Register(*registry).Add({});
+  auto& skeletons_metric = prometheus::BuildGauge().Name("skeletons").Register(*registry).Add({});
   skeletons_metric.Set(0.0);
 
   std::vector<double> buffer;
-  
+
   steady_clock::time_point start;
   start = steady_clock::now();
 
@@ -76,21 +74,20 @@ int main(int argc, char** argv) {
     render_skeletons(cv_image, skeletons, &pb_rendered_image);
     is::Message rendered_msg{pb_rendered_image};
     channel.publish(fmt::format("SkeletonsDetector.{}.Rendered", camera_id), rendered_msg);
+    render_span->Finish();
 
     auto end = steady_clock::now();
     auto duration = duration_cast<seconds>(end - start);
     if ((duration.count() >= options.period()) && (buffer.size() > 0)) {
       double mean = std::accumulate(buffer.begin(), buffer.end(), 0.0) / buffer.size();
+      is::info("metric = {}", mean);
       skeletons_metric.Set(mean);
       buffer.clear();
       start = steady_clock::now();
-    }
-    else {
+    } else {
       auto num_skeletons = (double) skeletons.objects_size();
       buffer.push_back(num_skeletons);
     }
-
-    render_span->Finish();
 
     service_span->Finish();
     auto t2 = steady_clock::now();
