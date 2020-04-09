@@ -25,7 +25,7 @@ data:
       "scale_number": {
         "value": 1
       },
-      "period": 50
+      "period": 5
     }
 
 ---
@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: is-skeletons-detector
-          image: luizcarloscf/is-skeletons-detector:0.0.2-openpose-prometheus
+          image: luizcarloscf/is-skeletons-detector:0.0.2-openpose-prometheus-gpu
           args: ["/opt/is/stream.bin", "/opt/options/options.json"]
           imagePullPolicy: Always
           ports:
