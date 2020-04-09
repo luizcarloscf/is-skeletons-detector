@@ -74,8 +74,8 @@ int main(int argc, char** argv) {
     render_skeletons(cv_image, skeletons, &pb_rendered_image);
     is::Message rendered_msg{pb_rendered_image};
     channel.publish(fmt::format("SkeletonsDetector.{}.Rendered", camera_id), rendered_msg);
-    render_span->Finish();
-
+    auto num_skeletons = (double) skeletons.objects_size();
+    buffer.push_back(num_skeletons);
     auto end = steady_clock::now();
     auto duration = duration_cast<seconds>(end - start);
     if ((duration.count() >= options.period()) && (buffer.size() > 0)) {
@@ -84,11 +84,9 @@ int main(int argc, char** argv) {
       skeletons_metric.Set(mean);
       buffer.clear();
       start = steady_clock::now();
-    } else {
-      auto num_skeletons = (double) skeletons.objects_size();
-      buffer.push_back(num_skeletons);
     }
-
+    render_span->Finish();
+      
     service_span->Finish();
     auto t2 = steady_clock::now();
 
