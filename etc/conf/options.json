@@ -1,7 +1,6 @@
 {
   "broker_uri": "amqp://rabbitmq.default",
-  "zipkin_host": "http://zipkin.default",
-  "zipkin_port": 9411,
+  "zipkin_uri": "http://zipkin.default:9411",
   "zipkin_batch_size": 100,
   "model": "MOBILENET_THIN",
   "resize": {

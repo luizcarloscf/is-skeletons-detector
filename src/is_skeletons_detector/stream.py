@@ -2,8 +2,8 @@ import re
 import time
 import dateutil.parser as dp
 
-from is_wire.core import Subscription, Message, Logger
-from is_wire.core import Tracer, ZipkinExporter, BackgroundThreadTransport
+from is_wire.core import Subscription, Message, Logger, Tracer, AsyncTransport
+from opencensus.ext.zipkin.trace_exporter import ZipkinExporter
 from is_msgs.image_pb2 import Image
 from prometheus_client import start_http_server, Gauge
 
@@ -17,6 +17,19 @@ def span_duration_ms(span):
     return dt.total_seconds() * 1000.0
 
 
+def create_exporter(service_name, uri):
+    log = Logger(name="CreateExporter")
+    zipkin_ok = re.match("http:\\/\\/([a-zA-Z0-9\\.]+)(:(\\d+))?", uri)
+    if not zipkin_ok:
+        log.critical("Invalid zipkin uri \"{}\", expected http://<hostname>:<port>", uri)
+    exporter = ZipkinExporter(
+        service_name=service_name,
+        host_name=zipkin_ok.group(1),
+        port=zipkin_ok.group(3),
+        transport=AsyncTransport)
+    return exporter
+
+
 def main():
     service_name = 'SkeletonsDetector.Detection'
     re_topic = re.compile(r'CameraGateway.(\w+).Frame')
@@ -28,14 +41,8 @@ def main():
     channel = StreamChannel(op.broker_uri)
     log.info('Connected to broker {}', op.broker_uri)
 
-    max_batch_size = max(100, op.zipkin_batch_size)
-    exporter = ZipkinExporter(
-        service_name=service_name,
-        host_name=op.zipkin_host,
-        port=op.zipkin_port,
-        transport=BackgroundThreadTransport(max_batch_size=max_batch_size),
-    )
-
+    exporter = create_exporter(service_name=service_name, uri=op.zipkin_uri)
+    
     skeletons_detected = Gauge("skeletons",
                                "Skeletons detected by any camera")
     skeletons_detected.set(0.0)
