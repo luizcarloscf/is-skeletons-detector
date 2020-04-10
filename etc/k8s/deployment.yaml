@@ -53,7 +53,7 @@ spec:
               nvidia.com/gpu: 1
           volumeMounts:
             - name: options
-              mountPath: /opt/options
+              mountPath: /opt/is
       terminationGracePeriodSeconds: 1
       volumes:
       - name: options

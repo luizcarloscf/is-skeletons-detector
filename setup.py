@@ -20,5 +20,6 @@ setup(
         'is-wire==1.2.0',
         'is-msgs==1.1.7',
         'opencv-python==3.3.1.*',
+        'opencensus-ext-zipkin==0.2.1',
     ],
 )
