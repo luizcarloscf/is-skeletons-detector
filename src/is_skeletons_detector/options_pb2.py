@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\roptions.proto\"\xab\x03\n\x18SkeletonsDetectorOptions\x12\x12\n\nbroker_uri\x18\x01 \x01(\t\x12\x13\n\x0bzipkin_host\x18\x02 \x01(\t\x12\x13\n\x0bzipkin_port\x18\x03 \x01(\r\x12\x19\n\x11zipkin_batch_size\x18\x04 \x01(\r\x12.\n\x05model\x18\x05 \x01(\x0e\x32\x1f.SkeletonsDetectorOptions.Model\x12\x30\n\x06resize\x18\x06 \x01(\x0b\x32 .SkeletonsDetectorOptions.Resize\x12\x18\n\x10resize_out_ratio\x18\x07 \x01(\x01\x12\x14\n\x0crender_topic\x18\x08 \x01(\r\x12\x1c\n\x14gpu_mem_allow_growth\x18\t \x01(\x08\x12\'\n\x1fper_process_gpu_memory_fraction\x18\n \x01(\x01\x12\x0e\n\x06period\x18\x0b \x01(\r\x1a\'\n\x06Resize\x12\r\n\x05width\x18\x01 \x01(\r\x12\x0e\n\x06height\x18\x02 \x01(\r\"$\n\x05Model\x12\x07\n\x03\x43MU\x10\x00\x12\x12\n\x0eMOBILENET_THIN\x10\x01\x62\x06proto3')
+  serialized_pb=_b('\n\roptions.proto\"\xfa\x02\n\x18SkeletonsDetectorOptions\x12\x12\n\nbroker_uri\x18\x01 \x01(\t\x12\x12\n\nzipkin_uri\x18\x02 \x01(\t\x12.\n\x05model\x18\x03 \x01(\x0e\x32\x1f.SkeletonsDetectorOptions.Model\x12\x30\n\x06resize\x18\x04 \x01(\x0b\x32 .SkeletonsDetectorOptions.Resize\x12\x18\n\x10resize_out_ratio\x18\x05 \x01(\x01\x12\x14\n\x0crender_topic\x18\x06 \x01(\r\x12\x1c\n\x14gpu_mem_allow_growth\x18\x07 \x01(\x08\x12\'\n\x1fper_process_gpu_memory_fraction\x18\x08 \x01(\x01\x12\x0e\n\x06period\x18\t \x01(\x01\x1a\'\n\x06Resize\x12\r\n\x05width\x18\x01 \x01(\r\x12\x0e\n\x06height\x18\x02 \x01(\r\"$\n\x05Model\x12\x07\n\x03\x43MU\x10\x00\x12\x12\n\x0eMOBILENET_THIN\x10\x01\x62\x06proto3')
 )
 
 
@@ -41,8 +41,8 @@ _SKELETONSDETECTOROPTIONS_MODEL = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=409,
-  serialized_end=445,
+  serialized_start=360,
+  serialized_end=396,
 )
 _sym_db.RegisterEnumDescriptor(_SKELETONSDETECTOROPTIONS_MODEL)
 
@@ -80,8 +80,8 @@ _SKELETONSDETECTOROPTIONS_RESIZE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=368,
-  serialized_end=407,
+  serialized_start=319,
+  serialized_end=358,
 )
 
 _SKELETONSDETECTOROPTIONS = _descriptor.Descriptor(
@@ -99,72 +99,58 @@ _SKELETONSDETECTOROPTIONS = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='zipkin_host', full_name='SkeletonsDetectorOptions.zipkin_host', index=1,
+      name='zipkin_uri', full_name='SkeletonsDetectorOptions.zipkin_uri', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='zipkin_port', full_name='SkeletonsDetectorOptions.zipkin_port', index=2,
-      number=3, type=13, cpp_type=3, label=1,
+      name='model', full_name='SkeletonsDetectorOptions.model', index=2,
+      number=3, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='zipkin_batch_size', full_name='SkeletonsDetectorOptions.zipkin_batch_size', index=3,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='model', full_name='SkeletonsDetectorOptions.model', index=4,
-      number=5, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='resize', full_name='SkeletonsDetectorOptions.resize', index=5,
-      number=6, type=11, cpp_type=10, label=1,
+      name='resize', full_name='SkeletonsDetectorOptions.resize', index=3,
+      number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='resize_out_ratio', full_name='SkeletonsDetectorOptions.resize_out_ratio', index=6,
-      number=7, type=1, cpp_type=5, label=1,
+      name='resize_out_ratio', full_name='SkeletonsDetectorOptions.resize_out_ratio', index=4,
+      number=5, type=1, cpp_type=5, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='render_topic', full_name='SkeletonsDetectorOptions.render_topic', index=7,
-      number=8, type=13, cpp_type=3, label=1,
+      name='render_topic', full_name='SkeletonsDetectorOptions.render_topic', index=5,
+      number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='gpu_mem_allow_growth', full_name='SkeletonsDetectorOptions.gpu_mem_allow_growth', index=8,
-      number=9, type=8, cpp_type=7, label=1,
+      name='gpu_mem_allow_growth', full_name='SkeletonsDetectorOptions.gpu_mem_allow_growth', index=6,
+      number=7, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='per_process_gpu_memory_fraction', full_name='SkeletonsDetectorOptions.per_process_gpu_memory_fraction', index=9,
-      number=10, type=1, cpp_type=5, label=1,
+      name='per_process_gpu_memory_fraction', full_name='SkeletonsDetectorOptions.per_process_gpu_memory_fraction', index=7,
+      number=8, type=1, cpp_type=5, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='period', full_name='SkeletonsDetectorOptions.period', index=10,
-      number=11, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
+      name='period', full_name='SkeletonsDetectorOptions.period', index=8,
+      number=9, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -182,7 +168,7 @@ _SKELETONSDETECTOROPTIONS = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=18,
-  serialized_end=445,
+  serialized_end=396,
 )
 
 _SKELETONSDETECTOROPTIONS_RESIZE.containing_type = _SKELETONSDETECTOROPTIONS
