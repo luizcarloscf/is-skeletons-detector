@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
         - name: is-skeletons-detector
-          image: luizcarloscf/is-skeletons-detector:0.0.2-openpose-prometheus-gpu
+          image: luizcarloscf/is-skeletons-detector:0.0.3-openpose
           args: ["/opt/is/stream.bin", "/opt/options/options.json"]
           imagePullPolicy: Always
           ports:

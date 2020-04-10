@@ -1,12 +1,12 @@
 {
-  "broker_uri": "amqp://localhost:5672",
-  "zipkin_host": "localhost",
+  "broker_uri": "amqp://rabbitmq.default",
+  "zipkin_host": "zipkin.default",
   "zipkin_port": 9411,
   "models_folder": "/models/",
-  "model": "MPI_4_layers",
+  "model": "COCO",
   "network_resolution": {
     "width": -1,
-    "height": 368
+    "height": 256
   },
   "output_resolution": {
     "width": -1,
