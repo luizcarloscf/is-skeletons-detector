@@ -1,7 +1,7 @@
 {
-  "broker_uri": "amqp://192.168.1.105:30000",
-  "zipkin_host": "192.168.1.105",
-  "zipkin_port": 30200,
+  "broker_uri": "amqp://rabbitmq.default",
+  "zipkin_host": "http://zipkin.default",
+  "zipkin_port": 9411,
   "zipkin_batch_size": 100,
   "model": "MOBILENET_THIN",
   "resize": {
@@ -11,5 +11,6 @@
   "resize_out_ratio": 4.0,
   "render_topic": 0,
   "gpu_mem_allow_growth": true,
-  "per_process_gpu_memory_fraction": 0.0
+  "per_process_gpu_memory_fraction": 0.0,
+  "period": 5
 }

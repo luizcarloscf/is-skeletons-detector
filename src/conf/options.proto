@@ -26,4 +26,5 @@ message SkeletonsDetectorOptions {
   // Limits the amount of memory available to the proccess alocate. 
   // If equals zero, no limit is applied.
   double per_process_gpu_memory_fraction = 10;
+  uint32 period = 11;
 }

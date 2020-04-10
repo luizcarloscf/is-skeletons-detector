@@ -1,4 +1,5 @@
 import re
+import time
 import dateutil.parser as dp
 
 from is_wire.core import Subscription, Message, Logger
@@ -38,7 +39,7 @@ def main():
     skeletons_detected = Gauge("skeletons",
                                "Skeletons detected by any camera")
     skeletons_detected.set(0.0)
-    start_http_server(8000)
+    start_http_server(8080)
 
     buffer = list()
     initial_time = time.time()
