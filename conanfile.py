@@ -20,7 +20,7 @@ class SkeletonsDetectorServiceConan(ConanFile):
         "is-wire/1.1.5@is/stable",
         "zipkin-cpp-opentracing/0.3.1@is/stable",
         "opencv/3.4.2@is/stable",
-        "openpose/1.4.0@is/stable",
+        "openpose/1.5.1@is/stable",
     )
     exports_sources = "*"
 

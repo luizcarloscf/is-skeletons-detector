@@ -1,5 +1,5 @@
 # Dependencies container
-FROM nvidia/cuda:8.0-cudnn5-devel AS dependencies
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu16.04 AS dependencies
 
 WORKDIR /tmp/
 ADD bootstrap.sh .
@@ -9,8 +9,17 @@ RUN bash bootstrap.sh  \
 RUN apt purge -y python3-pip python-pip                      \
   && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py \
   && python3 get-pip.py                                      \
-  && pip install conan_package_tools                         \
   && rm -f get-pip.py
+
+
+RUN pip3 uninstall --yes conan \
+ && pip3 uninstall --yes conan_package_tools \
+ && rm -rf /root/.conan \
+ && pip3 install conan \
+ && pip3 install conan_package_tools \
+ && conan remote add bincrafters https://api.bintray.com/conan/bincrafters/public-conan \
+ && conan remote add is https://api.bintray.com/conan/labviros/is  
+
 
 ENV CONAN_USERNAME is
 ENV CONAN_LOGIN_USERNAME is
@@ -44,6 +53,7 @@ FROM dependencies as build
 ADD . /project
 WORKDIR /project 
 RUN bash build.sh
+
 RUN mkdir -v -p /tmp/deploy                                              \
   && mkdir -v -p /tmp/deploy/opt/is                                      \
   && libs=`find build/ -type f -name '*.bin' -exec ldd {} \;             \
@@ -69,4 +79,4 @@ ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64               
 COPY --from=build /tmp/deploy /
 
 WORKDIR /opt/is
-ENTRYPOINT [ "/entrypoint" ]
+ENTRYPOINT [ "/entrypoint" ]      

@@ -24,11 +24,11 @@ if [[ $EUID == 0 ]]; then
 
   if [[ -z `command -v cmake` ]] || [[ $invalid_cmake_version == true ]]; then
     echo "[$EUID] |>>| installing cmake..."; 
-    wget https://cmake.org/files/v3.11/cmake-3.11.1-Linux-x86_64.sh
+    wget https://cmake.org/files/v3.17/cmake-3.17.2-Linux-x86_64.sh
     mkdir -p /opt/cmake
-    sh cmake-3.11.1-Linux-x86_64.sh --skip-license --prefix=/opt/cmake
+    sh cmake-3.17.2-Linux-x86_64.sh --skip-license --prefix=/opt/cmake
     ln -s /opt/cmake/bin/cmake /usr/local/bin/cmake
-    rm cmake-3.11.1-Linux-x86_64.sh
+    rm cmake-3.17.2-Linux-x86_64.sh
   fi
 
   if ! command -v ninja > /dev/null; then 

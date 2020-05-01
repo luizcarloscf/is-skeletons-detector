@@ -5,7 +5,7 @@ import os, shutil
 class CaffeConan(ConanFile):
     name = "caffe"
     version = "1.0.0"
-    git_version = "9453eb00f6073ab9091f8a3a973538c7bdcb6785"
+    git_version = "c95002fb17c87c8150fbad1e7e8e3ea3cebc641f"
     license = ""
     homepage = " https://github.com/CMU-Perceptual-Computing-Lab/caffe"
     url = " https://github.com/CMU-Perceptual-Computing-Lab/caffe"
@@ -31,7 +31,7 @@ class CaffeConan(ConanFile):
 
     def system_requirements(self):
         dependencies = [
-            "libatlas-base-dev", "libatlas-dev", "libgflags-dev", "libgoogle-glog-dev",
+            "libatlas-base-dev", "libgflags-dev", "libgoogle-glog-dev",
             "libhdf5-dev", "libsnappy-dev", "libleveldb-dev", "liblmdb-dev"
         ]
 

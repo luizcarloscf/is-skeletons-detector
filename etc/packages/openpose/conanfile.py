@@ -4,7 +4,7 @@ import os, shutil
 
 class OpenPoseConan(ConanFile):
     name = "openpose"
-    version = "1.4.0"
+    version = "1.5.1"
     license = ""
     homepage = " https://github.com/CMU-Perceptual-Computing-Lab/openpose"
     url = " https://github.com/CMU-Perceptual-Computing-Lab/openpose"
